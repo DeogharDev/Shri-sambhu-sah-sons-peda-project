@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Shri Shambhu Sahu Goods & Sons</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        maroon: "#7B1818",
+                        golden: "#D4AF37",
+                        saffron: "#F48C06",
+                        naturalBrown: "#5C4033",
+                        cream: "#FDFBF7",
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-hidden flex h-screen">
+
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-maroon text-cream transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-white/10 px-4">
+            <div class="text-center">
+                <h1 class="font-bold text-lg leading-tight text-white">Shri Shambhu Sahu</h1>
+                <p class="text-xs text-golden uppercase tracking-widest">Admin Panel</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-lg font-medium transition-colors">
+                <i class="ph ph-squares-four text-xl"></i> Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+                <i class="ph ph-shopping-cart text-xl"></i> Orders
+                <span class="ml-auto bg-saffron text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+                <i class="ph ph-package text-xl"></i> Products
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+                <i class="ph ph-users text-xl"></i> Customers
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+                <i class="ph ph-truck text-xl"></i> Shipments
+            </a>
+        </nav>
+
+        <!-- Logout -->
+        <div class="p-4 border-t border-white/10">
+            <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-red-500/20 hover:text-white rounded-lg font-medium transition-colors w-full">
+                <i class="ph ph-sign-out text-xl"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <!-- HEADER -->
+        <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-maroon p-2 rounded-md">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-naturalBrown hidden sm:block">Overview</h2>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-gray-400 hover:text-maroon transition-colors">
+                    <i class="ph ph-bell text-xl"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                    <div class="w-10 h-10 rounded-full bg-maroon/10 flex items-center justify-center text-maroon font-bold border border-maroon/20">
+                        A
+                    </div>
+                    <div class="hidden sm:block">
+                        <p class="text-sm font-semibold text-gray-700">Admin User</p>
+                        <p class="text-xs text-gray-500">Superadmin</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD SCROLLABLE AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8 bg-gray-50/50">
+            <div class="max-w-7xl mx-auto space-y-8">
+
+                <!-- STATS GRID -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Stat Card 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl shrink-0">
+                            <i class="ph-fill ph-currency-inr"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Total Sales</p>
+                            <h3 class="text-2xl font-bold text-gray-900">₹45,200</h3>
+                        </div>
+                    </div>
+                    <!-- Stat Card 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-2xl shrink-0">
+                            <i class="ph-fill ph-shopping-bag"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Pending Orders</p>
+                            <h3 class="text-2xl font-bold text-gray-900">12</h3>
+                        </div>
+                    </div>
+                    <!-- Stat Card 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shrink-0">
+                            <i class="ph-fill ph-package"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                            <h3 class="text-2xl font-bold text-gray-900">156</h3>
+                        </div>
+                    </div>
+                    <!-- Stat Card 4 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center text-2xl shrink-0">
+                            <i class="ph-fill ph-star"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Avg. Rating</p>
+                            <h3 class="text-2xl font-bold text-gray-900">4.8 <span class="text-sm font-normal text-gray-500">/5</span></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ORDERS SECTION -->
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
+                    
+                    <!-- Order Header & Filters -->
+                    <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h3 class="text-lg font-bold text-gray-900">Recent Orders</h3>
+                        
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg bg-maroon text-white transition-colors" data-status="ALL">All</button>
+                            <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="PENDING">Pending</button>
+                            <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="ACCEPTED">Accepted</button>
+                        </div>
+                    </div>
+
+                    <!-- Orders Table -->
+                    <div class="flex-1 overflow-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
+                            <thead class="bg-gray-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Order ID</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Customer</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Amount</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Payment</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body" class="divide-y divide-gray-100">
+                                <!-- Orders will be injected here via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ORDER DETAILS MODAL -->
+    <div id="order-modal" class="fixed inset-0 bg-gray-900/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-naturalBrown" id="modal-order-id">Order Details</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Customer Info</span>
+                    <p class="font-semibold text-gray-900" id="modal-customer">...</p>
+                    <p class="text-sm text-gray-600" id="modal-phone">...</p>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Delivery Address</span>
+                    <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100" id="modal-address">...</p>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Order Items</span>
+                    <div class="bg-cream p-3 rounded-lg border border-golden/20 text-sm font-medium text-naturalBrown flex justify-between items-center">
+                        <span id="modal-items">...</span>
+                        <span id="modal-amount" class="font-bold">...</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Selected Courier</span>
+                    <p class="text-sm font-semibold text-saffron flex items-center gap-2">
+                        <i class="ph-fill ph-truck"></i> <span id="modal-courier">...</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHIPROCKET MODAL -->
+    <div id="shipment-modal" class="fixed inset-0 bg-gray-900/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden text-center p-8">
+            <div id="shipment-loading">
+                <i class="ph ph-spinner-gap animate-spin text-4xl text-maroon mb-4 inline-block"></i>
+                <h3 class="font-bold text-gray-800 text-lg mb-1">Connecting to Shiprocket...</h3>
+                <p class="text-xs text-gray-500">Generating AWB & Booking Courier</p>
+            </div>
+            <div id="shipment-success" class="hidden">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
+                </div>
+                <h3 class="font-bold text-gray-800 text-xl mb-2">Shipment Created!</h3>
+                <p class="text-sm text-gray-500 mb-2">AWB No: <span class="font-mono font-bold text-naturalBrown">SR-9988221</span></p>
+                <button onclick="closeModals()" class="mt-4 w-full bg-maroon text-cream py-2.5 rounded-lg font-bold hover:bg-maroon/90">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        // Mock Order Data with detailed info
+        let orders = [
+            { id: "ORD-1001", date: "26 Aug, 10:30 AM", customer: "Rahul Kumar", phone: "9876543210", amount: 480, payment: "PAID", status: "PENDING", items: "1x Special Deoghar Peda (1 Kg)", address: "House 45, Boring Road, Patna, Bihar - 800001", courier: "Delhivery Surface" },
+            { id: "ORD-1002", date: "26 Aug, 11:15 AM", customer: "Priya Singh", phone: "9876543211", amount: 240, payment: "PAID", status: "PENDING", items: "1x Premium Kesar Peda (250g)", address: "Flat 202, Gomti Nagar, Lucknow, UP - 226010", courier: "Blue Dart Express" },
+            { id: "ORD-1003", date: "25 Aug, 04:20 PM", customer: "Amit Sharma", phone: "9876543212", amount: 920, payment: "PAID", status: "ACCEPTED", items: "2x Family Pack Peda (1 Kg)", address: "Sector 62, Noida, UP - 201309", courier: "XpressBees" },
+            { id: "ORD-1004", date: "25 Aug, 02:10 PM", customer: "Neha Gupta", phone: "9876543213", amount: 120, payment: "FAILED", status: "REJECTED", items: "1x Special Deoghar Peda (250g)", address: "Salt Lake, Kolkata, WB - 700091", courier: "Delhivery" },
+            { id: "ORD-1005", date: "24 Aug, 09:00 AM", customer: "Vikash Yadav", phone: "9876543214", amount: 560, payment: "PAID", status: "SHIPPED", items: "1x Premium Kesar Peda (1 Kg)", address: "Ratu Road, Ranchi, Jharkhand - 834001", courier: "Blue Dart" },
+        ];
+
+        let currentFilter = 'ALL';
+
+        function updateStats() {
+            let totalSales = 0;
+            let pendingCount = 0;
+            let totalCount = orders.length;
+
+            orders.forEach(o => {
+                if(o.payment === 'PAID' && o.status !== 'REJECTED') {
+                    totalSales += o.amount;
+                }
+                if(o.status === 'PENDING') {
+                    pendingCount++;
+                }
+            });
+
+            // Updating stats in UI (using DOM query for simplicity in mock)
+            const statValues = document.querySelectorAll('.text-2xl.font-bold.text-gray-900');
+            if(statValues.length >= 3) {
+                statValues[0].innerText = `₹${totalSales.toLocaleString('en-IN')}`;
+                statValues[1].innerText = pendingCount;
+                statValues[2].innerText = totalCount;
+            }
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'PENDING': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-orange-100 text-orange-700 border border-orange-200">Pending</span>';
+                case 'ACCEPTED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700 border border-blue-200">Accepted</span>';
+                case 'SHIPPED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200">Shipped</span>';
+                case 'DELIVERED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700 border border-green-200">Delivered</span>';
+                case 'REJECTED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700 border border-red-200">Rejected</span>';
+                default: return `<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-700">${status}</span>`;
+            }
+        }
+
+        function getPaymentBadge(payment) {
+            if(payment === 'PAID') return '<span class="text-green-600 font-bold text-xs"><i class="ph-fill ph-check-circle"></i> Paid</span>';
+            return '<span class="text-red-500 font-bold text-xs"><i class="ph-fill ph-x-circle"></i> Failed</span>';
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = '';
+
+            const filteredOrders = currentFilter === 'ALL' ? orders : orders.filter(o => o.status === currentFilter);
+
+            if(filteredOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">No orders found in this category.</td></tr>`;
+                return;
+            }
+
+            filteredOrders.forEach(order => {
+                let actionButtons = '';
+                
+                if(order.status === 'PENDING') {
+                    actionButtons = `
+                        <button onclick="updateOrderStatus('${order.id}', 'ACCEPTED')" class="px-3 py-1.5 text-xs font-bold text-white bg-green-600 hover:bg-green-700 rounded shadow-sm transition-colors mr-2">Accept</button>
+                        <button onclick="updateOrderStatus('${order.id}', 'REJECTED')" class="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors mr-2">Reject</button>
+                        <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>
+                    `;
+                } else if (order.status === 'ACCEPTED') {
+                    actionButtons = `
+                        <button onclick="openShipmentModal('${order.id}')" class="px-3 py-1.5 text-xs font-bold text-white bg-maroon hover:bg-maroon/90 rounded shadow-sm transition-colors flex items-center gap-1 ml-auto inline-flex mr-2"><i class="ph-fill ph-truck"></i> Ship Order</button>
+                        <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>
+                    `;
+                } else if (order.status === 'REJECTED') {
+                     actionButtons = `<span class="text-xs text-gray-400 font-medium italic mr-3">Refund Initiated</span> <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>`;
+                } else {
+                     actionButtons = `<button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/50 transition-colors group";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 text-sm font-bold text-gray-900">${order.id}</td>
+                    <td class="py-4 px-6 text-sm text-gray-600">${order.date}</td>
+                    <td class="py-4 px-6">
+                        <p class="text-sm font-semibold text-gray-900">${order.customer}</p>
+                        <p class="text-xs text-gray-500">${order.phone}</p>
+                    </td>
+                    <td class="py-4 px-6 text-sm font-bold text-gray-900">₹${order.amount}</td>
+                    <td class="py-4 px-6">${getPaymentBadge(order.payment)}</td>
+                    <td class="py-4 px-6">${getStatusBadge(order.status)}</td>
+                    <td class="py-4 px-6 text-right whitespace-nowrap">${actionButtons}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            updateStats(); // Update dashboard numbers
+        }
+
+        function updateOrderStatus(id, newStatus) {
+            const index = orders.findIndex(o => o.id === id);
+            if(index !== -1) {
+                orders[index].status = newStatus;
+                renderOrders(); // Re-render table
+            }
+        }
+
+        // Modal Logic
+        const orderModal = document.getElementById('order-modal');
+        const shipmentModal = document.getElementById('shipment-modal');
+
+        function openOrderDetails(id) {
+            const order = orders.find(o => o.id === id);
+            if(order) {
+                document.getElementById('modal-order-id').innerText = `Order: ${order.id}`;
+                document.getElementById('modal-customer').innerText = order.customer;
+                document.getElementById('modal-phone').innerText = order.phone;
+                document.getElementById('modal-address').innerText = order.address;
+                document.getElementById('modal-items').innerText = order.items;
+                document.getElementById('modal-amount').innerText = `₹${order.amount}`;
+                document.getElementById('modal-courier').innerText = order.courier;
+                
+                orderModal.classList.remove('hidden');
+                orderModal.classList.add('flex');
+            }
+        }
+
+        let currentShipmentId = null;
+        function openShipmentModal(id) {
+            currentShipmentId = id;
+            document.getElementById('shipment-loading').classList.remove('hidden');
+            document.getElementById('shipment-success').classList.add('hidden');
+            
+            shipmentModal.classList.remove('hidden');
+            shipmentModal.classList.add('flex');
+
+            // Simulate API Delay
+            setTimeout(() => {
+                document.getElementById('shipment-loading').classList.add('hidden');
+                document.getElementById('shipment-success').classList.remove('hidden');
+                updateOrderStatus(currentShipmentId, 'SHIPPED');
+            }, 2000);
+        }
+
+        function closeModals() {
+            orderModal.classList.add('hidden');
+            orderModal.classList.remove('flex');
+            shipmentModal.classList.add('hidden');
+            shipmentModal.classList.remove('flex');
+        }
+
+        // Filter Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-maroon', 'text-white');
+                    b.classList.add('bg-gray-100', 'text-gray-600');
+                });
+                e.target.classList.remove('bg-gray-100', 'text-gray-600');
+                e.target.classList.add('bg-maroon', 'text-white');
+
+                currentFilter = e.target.getAttribute('data-status');
+                renderOrders();
+            });
+        });
+
+        // Initial Render
+        renderOrders();
+    </script>
+</body>
+</html>
