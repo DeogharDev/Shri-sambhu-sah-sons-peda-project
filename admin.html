@@ -221,7 +221,7 @@
                 <div id="tab-products" class="tab-content hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-bold text-gray-900">Product Catalog</h3>
-                        <button class="bg-maroon text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-maroon/90 flex items-center gap-2">
+                        <button onclick="openProductModal()" class="bg-maroon text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-maroon/90 flex items-center gap-2">
                             <i class="ph ph-plus-circle text-lg"></i> Add Product
                         </button>
                     </div>
@@ -234,8 +234,14 @@
                 <!-- ================= TAB: CUSTOMERS ================= -->
                 <div id="tab-customers" class="tab-content hidden">
                     <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-                        <div class="p-6 border-b border-gray-200">
+                        <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <h3 class="text-lg font-bold text-gray-900">Customer Database</h3>
+                            
+                            <!-- Search by Number -->
+                            <div class="relative w-full sm:w-64">
+                                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" id="customer-search" oninput="searchCustomers()" placeholder="Search by phone number..." class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon transition-colors">
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse whitespace-nowrap">
@@ -245,6 +251,7 @@
                                         <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Contact</th>
                                         <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Total Orders</th>
                                         <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Total Spent</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 text-right">Order History</th>
                                     </tr>
                                 </thead>
                                 <tbody id="customers-table-body" class="divide-y divide-gray-100">
@@ -340,6 +347,91 @@
         </div>
     </div>
 
+    <!-- PRODUCT MODAL (ADD / EDIT) -->
+    <div id="product-modal" class="fixed inset-0 bg-gray-900/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-naturalBrown" id="product-modal-title">Add New Product</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[75vh]">
+                <form id="product-form" onsubmit="saveProduct(event)" class="space-y-4">
+                    <input type="hidden" id="edit-product-id" value="">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                        <input type="url" id="prod-img" required placeholder="https://images.unsplash.com/..." class="w-full bg-white border border-gray-200 rounded-md p-2.5 focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                        <input type="text" id="prod-name" required placeholder="e.g. Special Khoya Peda" class="w-full bg-white border border-gray-200 rounded-md p-2.5 focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Base Price per Kg (₹)</label>
+                        <input type="number" id="prod-price" required placeholder="e.g. 480" class="w-full bg-white border border-gray-200 rounded-md p-2.5 focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon">
+                        <p class="text-xs text-gray-500 mt-1">This base price will automatically be divided for variants (250g, 500g).</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="prod-desc" rows="3" required placeholder="Describe the product flavor and ingredients..." class="w-full bg-white border border-gray-200 rounded-md p-2.5 focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon resize-none"></textarea>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex justify-end gap-3">
+                        <button type="button" onclick="closeProductModal()" class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
+                        <button type="submit" class="bg-maroon text-cream px-6 py-2.5 rounded-lg font-bold hover:bg-maroon/90 shadow-md flex items-center gap-2">
+                            <i class="ph ph-broadcast text-lg"></i> Make Live
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOMER ORDER HISTORY MODAL -->
+    <div id="customer-orders-modal" class="fixed inset-0 bg-gray-900/60 z-[105] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <div>
+                    <h3 class="font-bold text-lg text-naturalBrown" id="co-modal-title">Order History</h3>
+                    <p class="text-sm text-gray-500 font-medium" id="co-modal-phone">...</p>
+                </div>
+                <button onclick="closeCustomerOrdersModal()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead class="bg-gray-50 sticky top-0 shadow-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase border-b border-gray-200">Order ID</th>
+                            <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase border-b border-gray-200">Date</th>
+                            <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase border-b border-gray-200">Amount</th>
+                            <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase border-b border-gray-200">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="co-modal-tbody" class="divide-y divide-gray-100">
+                        <!-- Dynamic History -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM MESSAGE BOX FOR DELETION (Alternative to alert) -->
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-gray-900/60 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden text-center p-6">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="ph-fill ph-warning-circle text-4xl text-red-500"></i>
+            </div>
+            <h3 class="font-bold text-gray-800 text-lg mb-2">Delete Product?</h3>
+            <p class="text-sm text-gray-500 mb-6">Are you sure you want to permanently delete this product? This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('delete-confirm-modal').classList.add('hidden'); document.getElementById('delete-confirm-modal').classList.remove('flex');" class="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+                <button id="confirm-delete-btn" class="flex-1 bg-red-500 text-white px-4 py-2.5 rounded-lg font-bold hover:bg-red-600 shadow-md transition-colors">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
     <script>
         // Data Mocks
@@ -352,9 +444,9 @@
         ];
 
         let products = [
-            { id: 1, name: "Special Deoghar Peda", price: "₹480 / Kg", img: "https://images.unsplash.com/photo-1596561339395-6fdfbd211463?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
-            { id: 2, name: "Premium Kesar Peda", price: "₹560 / Kg", img: "https://images.unsplash.com/photo-1605807646983-377bc5a76493?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
-            { id: 3, name: "Family Pack Peda", price: "₹460 / Kg", img: "https://images.unsplash.com/photo-1543419912-1f480373d528?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: false },
+            { id: 1, name: "Special Deoghar Peda", price: 480, desc: "Pure traditional khoya peda, crafted with the authentic recipe of Baba Dham.", img: "https://images.unsplash.com/photo-1596561339395-6fdfbd211463?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
+            { id: 2, name: "Premium Kesar Peda", price: 560, desc: "Authentic khoya peda enriched with the goodness and aroma of pure saffron (Kesar).", img: "https://images.unsplash.com/photo-1605807646983-377bc5a76493?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
+            { id: 3, name: "Family Pack Peda", price: 460, desc: "Perfect for gifting and sharing during festivals. Shuddh Deoghar taste in a larger quantity.", img: "https://images.unsplash.com/photo-1543419912-1f480373d528?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: false },
         ];
 
         let customers = [
@@ -365,6 +457,7 @@
         ];
 
         let currentFilter = 'ALL';
+        let customerSearchTerm = '';
 
         // Sidebar & Tabs Logic
         function toggleSidebar() {
@@ -477,34 +570,66 @@
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = products.map(p => `
-                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                    <img src="${p.img}" class="w-full h-40 object-cover bg-gray-100">
-                    <div class="p-4">
-                        <h4 class="font-bold text-gray-900 mb-1">${p.name}</h4>
-                        <p class="text-sm text-maroon font-semibold mb-4">${p.price}</p>
-                        <div class="flex items-center justify-between border-t border-gray-100 pt-3">
-                            <span class="text-sm font-medium ${p.inStock ? 'text-green-600' : 'text-red-500'}">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
-                            <label class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                <input type="checkbox" name="toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" ${p.inStock ? 'checked' : ''}/>
-                                <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label>
-                            </label>
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden relative group flex flex-col">
+                    <!-- Edit & Delete Actions (Visible on Hover) -->
+                    <div class="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <button onclick="openProductModal(${p.id})" class="w-8 h-8 bg-white/95 text-blue-600 rounded-full shadow-md flex items-center justify-center hover:bg-blue-50 transition-colors" title="Edit"><i class="ph ph-pencil-simple text-lg"></i></button>
+                        <button onclick="confirmDeleteProduct(${p.id})" class="w-8 h-8 bg-white/95 text-red-500 rounded-full shadow-md flex items-center justify-center hover:bg-red-50 transition-colors" title="Delete"><i class="ph ph-trash text-lg"></i></button>
+                    </div>
+                    
+                    <div class="relative h-40 w-full overflow-hidden bg-gray-100">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="font-bold text-gray-900 mb-1 line-clamp-1">${p.name}</h4>
+                        <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.desc}</p>
+                        
+                        <div class="mt-auto">
+                            <p class="text-sm font-semibold text-maroon mb-3">₹${p.price} <span class="text-xs text-gray-400 font-normal">/ Kg Base</span></p>
+                            <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+                                <span class="text-sm font-medium ${p.inStock ? 'text-green-600' : 'text-red-500'}">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
+                                <label class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" onchange="toggleProductStock(${p.id})" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" ${p.inStock ? 'checked' : ''}/>
+                                    <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
+        function searchCustomers() {
+            customerSearchTerm = document.getElementById('customer-search').value.trim();
+            renderCustomers();
+        }
+
         function renderCustomers() {
             const tbody = document.getElementById('customers-table-body');
-            tbody.innerHTML = customers.map(c => `
-                <tr class="hover:bg-gray-50/50">
+            
+            // Filter customers by phone number
+            const filteredCustomers = customers.filter(c => c.phone.includes(customerSearchTerm));
+            
+            if(filteredCustomers.length === 0) {
+                 tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">No customers found with this number.</td></tr>`;
+                 return;
+            }
+
+            tbody.innerHTML = filteredCustomers.map(c => `
+                <tr class="hover:bg-gray-50/50 transition-colors">
                     <td class="py-4 px-6 font-semibold flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-maroon/10 text-maroon flex items-center justify-center font-bold text-xs">${c.name.charAt(0)}</div>
                         ${c.name}
                     </td>
-                    <td class="py-4 px-6 text-sm text-gray-600">${c.phone}</td>
+                    <td class="py-4 px-6 text-sm text-gray-600 font-mono">${c.phone}</td>
                     <td class="py-4 px-6 text-sm font-bold text-gray-900">${c.orders}</td>
                     <td class="py-4 px-6 text-sm font-bold text-green-600">₹${c.spent.toLocaleString()}</td>
+                    <td class="py-4 px-6 text-right">
+                        <button onclick="viewCustomerOrders('${c.phone}', '${c.name}')" class="text-maroon hover:text-saffron text-sm font-semibold flex items-center justify-end gap-1.5 w-full transition-colors">
+                            <i class="ph ph-clock-counter-clockwise text-lg"></i> View
+                        </button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -585,6 +710,136 @@
             // Re-render specific tabs to reflect changes
             renderOrders();
             renderShipments();
+        }
+
+        function viewCustomerOrders(phone, name) {
+            const modal = document.getElementById('customer-orders-modal');
+            document.getElementById('co-modal-title').innerText = `${name}'s Orders`;
+            document.getElementById('co-modal-phone').innerText = `Phone: ${phone}`;
+            
+            const tbody = document.getElementById('co-modal-tbody');
+            
+            // Find all orders linked to this customer's phone
+            const customerOrders = orders.filter(o => o.phone === phone);
+            
+            if(customerOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-500">No previous orders found.</td></tr>`;
+            } else {
+                tbody.innerHTML = customerOrders.map(o => `
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="py-4 px-6 text-sm font-bold text-gray-900">${o.id}</td>
+                        <td class="py-4 px-6 text-sm text-gray-600">${o.date}</td>
+                        <td class="py-4 px-6 text-sm font-bold text-naturalBrown">₹${o.amount}</td>
+                        <td class="py-4 px-6">${getStatusBadge(o.status)}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCustomerOrdersModal() {
+            const modal = document.getElementById('customer-orders-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // --- PRODUCT MANAGEMENT LOGIC ---
+
+        function openProductModal(id = null) {
+            const modal = document.getElementById('product-modal');
+            const title = document.getElementById('product-modal-title');
+            const form = document.getElementById('product-form');
+            
+            form.reset();
+            document.getElementById('edit-product-id').value = '';
+
+            if(id) {
+                // Edit Mode
+                const p = products.find(x => x.id === id);
+                if(p) {
+                    title.innerText = "Edit Product";
+                    document.getElementById('edit-product-id').value = p.id;
+                    document.getElementById('prod-img').value = p.img;
+                    document.getElementById('prod-name').value = p.name;
+                    document.getElementById('prod-price').value = p.price;
+                    document.getElementById('prod-desc').value = p.desc;
+                }
+            } else {
+                // Add Mode
+                title.innerText = "Add New Product";
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-product-id').value;
+            const img = document.getElementById('prod-img').value;
+            const name = document.getElementById('prod-name').value;
+            const price = parseInt(document.getElementById('prod-price').value);
+            const desc = document.getElementById('prod-desc').value;
+
+            if(editId) {
+                // Update Product
+                const idx = products.findIndex(x => x.id === parseInt(editId));
+                if(idx !== -1) {
+                    products[idx].img = img;
+                    products[idx].name = name;
+                    products[idx].price = price;
+                    products[idx].desc = desc;
+                }
+            } else {
+                // Add New Product
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                products.push({
+                    id: newId,
+                    name: name,
+                    price: price,
+                    desc: desc,
+                    img: img,
+                    inStock: true
+                });
+            }
+
+            closeProductModal();
+            renderProducts();
+        }
+
+        let productToDelete = null;
+        function confirmDeleteProduct(id) {
+            productToDelete = id;
+            const modal = document.getElementById('delete-confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+            if(productToDelete) {
+                products = products.filter(p => p.id !== productToDelete);
+                renderProducts();
+            }
+            const modal = document.getElementById('delete-confirm-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            productToDelete = null;
+        });
+
+        function toggleProductStock(id) {
+            const idx = products.findIndex(p => p.id === id);
+            if(idx !== -1) {
+                products[idx].inStock = !products[idx].inStock;
+                renderProducts(); // Re-render to update UI elements
+            }
         }
 
         // Order Filter setup
