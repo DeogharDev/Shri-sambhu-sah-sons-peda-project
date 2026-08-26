@@ -36,6 +36,10 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Toggle Switch CSS */
+        .toggle-checkbox:checked { right: 0; border-color: #68D391; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #68D391; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-hidden flex h-screen">
@@ -53,24 +57,24 @@
             </div>
         </div>
 
-        <!-- Navigation -->
+        <!-- Navigation Tabs -->
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-lg font-medium transition-colors">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active-nav w-full flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-lg font-medium transition-colors">
                 <i class="ph ph-squares-four text-xl"></i> Dashboard
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+            </button>
+            <button onclick="switchTab('orders')" id="nav-orders" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
                 <i class="ph ph-shopping-cart text-xl"></i> Orders
-                <span class="ml-auto bg-saffron text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+                <span id="nav-pending-badge" class="ml-auto bg-saffron text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </button>
+            <button onclick="switchTab('products')" id="nav-products" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
                 <i class="ph ph-package text-xl"></i> Products
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+            </button>
+            <button onclick="switchTab('customers')" id="nav-customers" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
                 <i class="ph ph-users text-xl"></i> Customers
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
+            </button>
+            <button onclick="switchTab('shipments')" id="nav-shipments" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-cream/70 hover:bg-white/5 hover:text-white rounded-lg font-medium transition-colors">
                 <i class="ph ph-truck text-xl"></i> Shipments
-            </a>
+            </button>
         </nav>
 
         <!-- Logout -->
@@ -82,7 +86,7 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50/50">
         
         <!-- HEADER -->
         <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-8 shrink-0 z-30">
@@ -90,7 +94,7 @@
                 <button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-maroon p-2 rounded-md">
                     <i class="ph ph-list text-2xl"></i>
                 </button>
-                <h2 class="text-xl font-bold text-naturalBrown hidden sm:block">Overview</h2>
+                <h2 id="page-title" class="text-xl font-bold text-naturalBrown hidden sm:block">Overview Dashboard</h2>
             </div>
             
             <div class="flex items-center gap-4">
@@ -110,86 +114,170 @@
             </div>
         </header>
 
-        <!-- DASHBOARD SCROLLABLE AREA -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-8 bg-gray-50/50">
-            <div class="max-w-7xl mx-auto space-y-8">
+        <!-- SCROLLABLE WORKSPACE -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8">
+            <div class="max-w-7xl mx-auto space-y-8 relative">
 
-                <!-- STATS GRID -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <!-- Stat Card 1 -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl shrink-0">
-                            <i class="ph-fill ph-currency-inr"></i>
+                <!-- ================= TAB: DASHBOARD ================= -->
+                <div id="tab-dashboard" class="tab-content block">
+                    <!-- STATS GRID -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl shrink-0">
+                                <i class="ph-fill ph-currency-inr"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Total Sales</p>
+                                <h3 class="text-2xl font-bold text-gray-900" id="dash-sales">₹0</h3>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Total Sales</p>
-                            <h3 class="text-2xl font-bold text-gray-900">₹45,200</h3>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-2xl shrink-0">
+                                <i class="ph-fill ph-clock"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Pending Orders</p>
+                                <h3 class="text-2xl font-bold text-gray-900" id="dash-pending">0</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shrink-0">
+                                <i class="ph-fill ph-package"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                                <h3 class="text-2xl font-bold text-gray-900" id="dash-orders">0</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center text-2xl shrink-0">
+                                <i class="ph-fill ph-users"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Customers</p>
+                                <h3 class="text-2xl font-bold text-gray-900" id="dash-customers">0</h3>
+                            </div>
                         </div>
                     </div>
-                    <!-- Stat Card 2 -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-2xl shrink-0">
-                            <i class="ph-fill ph-shopping-bag"></i>
+
+                    <!-- Quick Actions & Alerts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Action Needed</h3>
+                            <div class="bg-orange-50 border border-orange-100 p-4 rounded-lg flex items-start gap-3">
+                                <i class="ph-fill ph-warning-circle text-orange-500 text-xl mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-orange-800">New Pending Orders</h4>
+                                    <p class="text-sm text-orange-600 mt-1">You have orders waiting to be accepted and packed.</p>
+                                    <button onclick="switchTab('orders')" class="mt-3 text-sm font-bold bg-orange-500 text-white px-4 py-1.5 rounded hover:bg-orange-600 transition">View Orders</button>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Pending Orders</p>
-                            <h3 class="text-2xl font-bold text-gray-900">12</h3>
-                        </div>
-                    </div>
-                    <!-- Stat Card 3 -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shrink-0">
-                            <i class="ph-fill ph-package"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
-                            <h3 class="text-2xl font-bold text-gray-900">156</h3>
-                        </div>
-                    </div>
-                    <!-- Stat Card 4 -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center text-2xl shrink-0">
-                            <i class="ph-fill ph-star"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Avg. Rating</p>
-                            <h3 class="text-2xl font-bold text-gray-900">4.8 <span class="text-sm font-normal text-gray-500">/5</span></h3>
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col justify-center items-center text-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-12 h-12 mb-3 grayscale opacity-50">
+                            <h3 class="font-bold text-gray-800">WhatsApp Gateway Connected</h3>
+                            <p class="text-sm text-gray-500 mt-1">Automated messages are being sent to customers.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- ORDERS SECTION -->
-                <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
-                    
-                    <!-- Order Header & Filters -->
-                    <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <h3 class="text-lg font-bold text-gray-900">Recent Orders</h3>
-                        
-                        <div class="flex flex-wrap gap-2">
-                            <button class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg bg-maroon text-white transition-colors" data-status="ALL">All</button>
-                            <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="PENDING">Pending</button>
-                            <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="ACCEPTED">Accepted</button>
+                <!-- ================= TAB: ORDERS ================= -->
+                <div id="tab-orders" class="tab-content hidden">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-[700px]">
+                        <!-- Order Header & Filters -->
+                        <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <h3 class="text-lg font-bold text-gray-900">Manage Orders</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg bg-maroon text-white transition-colors" data-status="ALL">All</button>
+                                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="PENDING">Pending</button>
+                                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="ACCEPTED">Accepted</button>
+                                <button class="filter-btn px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors" data-status="SHIPPED">Shipped</button>
+                            </div>
+                        </div>
+
+                        <!-- Orders Table -->
+                        <div class="flex-1 overflow-auto">
+                            <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                                <thead class="bg-gray-50 sticky top-0 z-10">
+                                    <tr>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Order ID</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Customer</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Amount</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Payment</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table-body" class="divide-y divide-gray-100">
+                                    <!-- Dynamic Orders -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Orders Table -->
-                    <div class="flex-1 overflow-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
-                            <thead class="bg-gray-50 sticky top-0 z-10">
-                                <tr>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Order ID</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Date</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Customer</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Amount</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Payment</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
-                                    <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="orders-table-body" class="divide-y divide-gray-100">
-                                <!-- Orders will be injected here via JS -->
-                            </tbody>
-                        </table>
+                <!-- ================= TAB: PRODUCTS ================= -->
+                <div id="tab-products" class="tab-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">Product Catalog</h3>
+                        <button class="bg-maroon text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-maroon/90 flex items-center gap-2">
+                            <i class="ph ph-plus-circle text-lg"></i> Add Product
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="products-grid">
+                        <!-- Dynamic Products -->
+                    </div>
+                </div>
+
+                <!-- ================= TAB: CUSTOMERS ================= -->
+                <div id="tab-customers" class="tab-content hidden">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-bold text-gray-900">Customer Database</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse whitespace-nowrap">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Customer</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Contact</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Total Orders</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Total Spent</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customers-table-body" class="divide-y divide-gray-100">
+                                    <!-- Dynamic Customers -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB: SHIPMENTS ================= -->
+                <div id="tab-shipments" class="tab-content hidden">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-gray-900">Shiprocket Sync</h3>
+                            <span class="text-xs bg-green-100 text-green-700 font-bold px-2 py-1 rounded">API Active</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse whitespace-nowrap">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Order ID</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">AWB Number</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Courier</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">Status</th>
+                                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="shipments-table-body" class="divide-y divide-gray-100">
+                                    <!-- Dynamic Shipments -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -246,7 +334,7 @@
                     <i class="ph-fill ph-check-circle text-4xl text-green-500"></i>
                 </div>
                 <h3 class="font-bold text-gray-800 text-xl mb-2">Shipment Created!</h3>
-                <p class="text-sm text-gray-500 mb-2">AWB No: <span class="font-mono font-bold text-naturalBrown">SR-9988221</span></p>
+                <p class="text-sm text-gray-500 mb-2">AWB No: <span id="new-awb" class="font-mono font-bold text-naturalBrown">...</span></p>
                 <button onclick="closeModals()" class="mt-4 w-full bg-maroon text-cream py-2.5 rounded-lg font-bold hover:bg-maroon/90">Done</button>
             </div>
         </div>
@@ -254,12 +342,35 @@
 
     <!-- SCRIPTS -->
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
+        // Data Mocks
+        let orders = [
+            { id: "ORD-1001", date: "26 Aug, 10:30 AM", customer: "Rahul Kumar", phone: "9876543210", amount: 480, payment: "PAID", status: "PENDING", items: "1x Special Deoghar Peda (1 Kg)", address: "House 45, Boring Road, Patna, Bihar - 800001", courier: "Delhivery Surface", awb: null },
+            { id: "ORD-1002", date: "26 Aug, 11:15 AM", customer: "Priya Singh", phone: "9876543211", amount: 240, payment: "PAID", status: "PENDING", items: "1x Premium Kesar Peda (250g)", address: "Flat 202, Gomti Nagar, Lucknow, UP - 226010", courier: "Blue Dart Express", awb: null },
+            { id: "ORD-1003", date: "25 Aug, 04:20 PM", customer: "Amit Sharma", phone: "9876543212", amount: 920, payment: "PAID", status: "ACCEPTED", items: "2x Family Pack Peda (1 Kg)", address: "Sector 62, Noida, UP - 201309", courier: "XpressBees", awb: null },
+            { id: "ORD-1004", date: "25 Aug, 02:10 PM", customer: "Neha Gupta", phone: "9876543213", amount: 120, payment: "FAILED", status: "REJECTED", items: "1x Special Deoghar Peda (250g)", address: "Salt Lake, Kolkata, WB - 700091", courier: "Delhivery", awb: null },
+            { id: "ORD-1005", date: "24 Aug, 09:00 AM", customer: "Vikash Yadav", phone: "9876543214", amount: 560, payment: "PAID", status: "SHIPPED", items: "1x Premium Kesar Peda (1 Kg)", address: "Ratu Road, Ranchi, Jharkhand - 834001", courier: "Blue Dart", awb: "BD-77382910" },
+        ];
 
+        let products = [
+            { id: 1, name: "Special Deoghar Peda", price: "₹480 / Kg", img: "https://images.unsplash.com/photo-1596561339395-6fdfbd211463?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
+            { id: 2, name: "Premium Kesar Peda", price: "₹560 / Kg", img: "https://images.unsplash.com/photo-1605807646983-377bc5a76493?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: true },
+            { id: 3, name: "Family Pack Peda", price: "₹460 / Kg", img: "https://images.unsplash.com/photo-1543419912-1f480373d528?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80", inStock: false },
+        ];
+
+        let customers = [
+            { name: "Rahul Kumar", phone: "9876543210", orders: 3, spent: 1440 },
+            { name: "Priya Singh", phone: "9876543211", orders: 1, spent: 240 },
+            { name: "Amit Sharma", phone: "9876543212", orders: 5, spent: 4600 },
+            { name: "Vikash Yadav", phone: "9876543214", orders: 2, spent: 1120 },
+        ];
+
+        let currentFilter = 'ALL';
+
+        // Sidebar & Tabs Logic
         function toggleSidebar() {
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-            if (isClosed) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.remove('opacity-0'), 10);
@@ -270,160 +381,213 @@
             }
         }
 
-        // Mock Order Data with detailed info
-        let orders = [
-            { id: "ORD-1001", date: "26 Aug, 10:30 AM", customer: "Rahul Kumar", phone: "9876543210", amount: 480, payment: "PAID", status: "PENDING", items: "1x Special Deoghar Peda (1 Kg)", address: "House 45, Boring Road, Patna, Bihar - 800001", courier: "Delhivery Surface" },
-            { id: "ORD-1002", date: "26 Aug, 11:15 AM", customer: "Priya Singh", phone: "9876543211", amount: 240, payment: "PAID", status: "PENDING", items: "1x Premium Kesar Peda (250g)", address: "Flat 202, Gomti Nagar, Lucknow, UP - 226010", courier: "Blue Dart Express" },
-            { id: "ORD-1003", date: "25 Aug, 04:20 PM", customer: "Amit Sharma", phone: "9876543212", amount: 920, payment: "PAID", status: "ACCEPTED", items: "2x Family Pack Peda (1 Kg)", address: "Sector 62, Noida, UP - 201309", courier: "XpressBees" },
-            { id: "ORD-1004", date: "25 Aug, 02:10 PM", customer: "Neha Gupta", phone: "9876543213", amount: 120, payment: "FAILED", status: "REJECTED", items: "1x Special Deoghar Peda (250g)", address: "Salt Lake, Kolkata, WB - 700091", courier: "Delhivery" },
-            { id: "ORD-1005", date: "24 Aug, 09:00 AM", customer: "Vikash Yadav", phone: "9876543214", amount: 560, payment: "PAID", status: "SHIPPED", items: "1x Premium Kesar Peda (1 Kg)", address: "Ratu Road, Ranchi, Jharkhand - 834001", courier: "Blue Dart" },
-        ];
+        function switchTab(tabId) {
+            // Update UI Title
+            const titles = {
+                'dashboard': 'Overview Dashboard',
+                'orders': 'Order Management',
+                'products': 'Product Catalog',
+                'customers': 'Customer Database',
+                'shipments': 'Shiprocket Sync'
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
 
-        let currentFilter = 'ALL';
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+            
+            // Show selected tab
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('block');
 
-        function updateStats() {
-            let totalSales = 0;
-            let pendingCount = 0;
-            let totalCount = orders.length;
-
-            orders.forEach(o => {
-                if(o.payment === 'PAID' && o.status !== 'REJECTED') {
-                    totalSales += o.amount;
-                }
-                if(o.status === 'PENDING') {
-                    pendingCount++;
-                }
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-white/10', 'text-white');
+                btn.classList.add('text-cream/70');
             });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('text-cream/70');
+            activeBtn.classList.add('bg-white/10', 'text-white');
 
-            // Updating stats in UI (using DOM query for simplicity in mock)
-            const statValues = document.querySelectorAll('.text-2xl.font-bold.text-gray-900');
-            if(statValues.length >= 3) {
-                statValues[0].innerText = `₹${totalSales.toLocaleString('en-IN')}`;
-                statValues[1].innerText = pendingCount;
-                statValues[2].innerText = totalCount;
-            }
+            // Close mobile sidebar if open
+            if(window.innerWidth < 1024) toggleSidebar();
         }
 
+        // Stats & Dashboard
+        function updateStats() {
+            let totalSales = 0, pendingCount = 0;
+            orders.forEach(o => {
+                if(o.payment === 'PAID' && o.status !== 'REJECTED') totalSales += o.amount;
+                if(o.status === 'PENDING') pendingCount++;
+            });
+
+            document.getElementById('dash-sales').innerText = `₹${totalSales.toLocaleString('en-IN')}`;
+            document.getElementById('dash-pending').innerText = pendingCount;
+            document.getElementById('dash-orders').innerText = orders.length;
+            document.getElementById('dash-customers').innerText = customers.length;
+            
+            // Update Sidebar Badge
+            const badge = document.getElementById('nav-pending-badge');
+            badge.innerText = pendingCount;
+            badge.classList.toggle('hidden', pendingCount === 0);
+        }
+
+        // Render Functions
         function getStatusBadge(status) {
             switch(status) {
                 case 'PENDING': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-orange-100 text-orange-700 border border-orange-200">Pending</span>';
                 case 'ACCEPTED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700 border border-blue-200">Accepted</span>';
                 case 'SHIPPED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200">Shipped</span>';
-                case 'DELIVERED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700 border border-green-200">Delivered</span>';
                 case 'REJECTED': return '<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700 border border-red-200">Rejected</span>';
                 default: return `<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-700">${status}</span>`;
             }
         }
 
-        function getPaymentBadge(payment) {
-            if(payment === 'PAID') return '<span class="text-green-600 font-bold text-xs"><i class="ph-fill ph-check-circle"></i> Paid</span>';
-            return '<span class="text-red-500 font-bold text-xs"><i class="ph-fill ph-x-circle"></i> Failed</span>';
-        }
-
         function renderOrders() {
             const tbody = document.getElementById('orders-table-body');
             tbody.innerHTML = '';
+            const filtered = currentFilter === 'ALL' ? orders : orders.filter(o => o.status === currentFilter);
 
-            const filteredOrders = currentFilter === 'ALL' ? orders : orders.filter(o => o.status === currentFilter);
+            filtered.forEach(order => {
+                let btns = '';
+                if(order.status === 'PENDING') {
+                    btns = `
+                        <button onclick="updateOrderStatus('${order.id}', 'ACCEPTED')" class="px-3 py-1.5 text-xs font-bold text-white bg-green-600 hover:bg-green-700 rounded shadow-sm transition-colors mr-2">Accept</button>
+                        <button onclick="updateOrderStatus('${order.id}', 'REJECTED')" class="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors mr-2">Reject</button>
+                    `;
+                } else if (order.status === 'ACCEPTED') {
+                    btns = `<button onclick="openShipmentModal('${order.id}')" class="px-3 py-1.5 text-xs font-bold text-white bg-maroon hover:bg-maroon/90 rounded shadow-sm mr-2 flex items-center gap-1 inline-flex"><i class="ph-fill ph-truck"></i> Ship</button>`;
+                }
+                btns += `<button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon align-middle" title="View"><i class="ph ph-eye text-xl"></i></button>`;
 
-            if(filteredOrders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">No orders found in this category.</td></tr>`;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="py-4 px-6 text-sm font-bold">${order.id}</td>
+                        <td class="py-4 px-6 text-sm text-gray-600">${order.date}</td>
+                        <td class="py-4 px-6"><p class="text-sm font-semibold">${order.customer}</p></td>
+                        <td class="py-4 px-6 text-sm font-bold">₹${order.amount}</td>
+                        <td class="py-4 px-6">${order.payment === 'PAID' ? '<span class="text-green-600 font-bold text-xs">Paid</span>' : '<span class="text-red-500 font-bold text-xs">Failed</span>'}</td>
+                        <td class="py-4 px-6">${getStatusBadge(order.status)}</td>
+                        <td class="py-4 px-6 text-right">${btns}</td>
+                    </tr>`;
+            });
+            updateStats();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <img src="${p.img}" class="w-full h-40 object-cover bg-gray-100">
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-900 mb-1">${p.name}</h4>
+                        <p class="text-sm text-maroon font-semibold mb-4">${p.price}</p>
+                        <div class="flex items-center justify-between border-t border-gray-100 pt-3">
+                            <span class="text-sm font-medium ${p.inStock ? 'text-green-600' : 'text-red-500'}">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
+                            <label class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" ${p.inStock ? 'checked' : ''}/>
+                                <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customers-table-body');
+            tbody.innerHTML = customers.map(c => `
+                <tr class="hover:bg-gray-50/50">
+                    <td class="py-4 px-6 font-semibold flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-maroon/10 text-maroon flex items-center justify-center font-bold text-xs">${c.name.charAt(0)}</div>
+                        ${c.name}
+                    </td>
+                    <td class="py-4 px-6 text-sm text-gray-600">${c.phone}</td>
+                    <td class="py-4 px-6 text-sm font-bold text-gray-900">${c.orders}</td>
+                    <td class="py-4 px-6 text-sm font-bold text-green-600">₹${c.spent.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderShipments() {
+            const tbody = document.getElementById('shipments-table-body');
+            const shipped = orders.filter(o => o.status === 'SHIPPED');
+            
+            if(shipped.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">No active shipments found.</td></tr>`;
                 return;
             }
 
-            filteredOrders.forEach(order => {
-                let actionButtons = '';
-                
-                if(order.status === 'PENDING') {
-                    actionButtons = `
-                        <button onclick="updateOrderStatus('${order.id}', 'ACCEPTED')" class="px-3 py-1.5 text-xs font-bold text-white bg-green-600 hover:bg-green-700 rounded shadow-sm transition-colors mr-2">Accept</button>
-                        <button onclick="updateOrderStatus('${order.id}', 'REJECTED')" class="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded border border-red-200 transition-colors mr-2">Reject</button>
-                        <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>
-                    `;
-                } else if (order.status === 'ACCEPTED') {
-                    actionButtons = `
-                        <button onclick="openShipmentModal('${order.id}')" class="px-3 py-1.5 text-xs font-bold text-white bg-maroon hover:bg-maroon/90 rounded shadow-sm transition-colors flex items-center gap-1 ml-auto inline-flex mr-2"><i class="ph-fill ph-truck"></i> Ship Order</button>
-                        <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>
-                    `;
-                } else if (order.status === 'REJECTED') {
-                     actionButtons = `<span class="text-xs text-gray-400 font-medium italic mr-3">Refund Initiated</span> <button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>`;
-                } else {
-                     actionButtons = `<button onclick="openOrderDetails('${order.id}')" class="text-gray-400 hover:text-maroon transition-colors align-middle" title="View Details"><i class="ph ph-eye text-xl"></i></button>`;
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50/50 transition-colors group";
-                tr.innerHTML = `
-                    <td class="py-4 px-6 text-sm font-bold text-gray-900">${order.id}</td>
-                    <td class="py-4 px-6 text-sm text-gray-600">${order.date}</td>
-                    <td class="py-4 px-6">
-                        <p class="text-sm font-semibold text-gray-900">${order.customer}</p>
-                        <p class="text-xs text-gray-500">${order.phone}</p>
-                    </td>
-                    <td class="py-4 px-6 text-sm font-bold text-gray-900">₹${order.amount}</td>
-                    <td class="py-4 px-6">${getPaymentBadge(order.payment)}</td>
-                    <td class="py-4 px-6">${getStatusBadge(order.status)}</td>
-                    <td class="py-4 px-6 text-right whitespace-nowrap">${actionButtons}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-            
-            updateStats(); // Update dashboard numbers
+            tbody.innerHTML = shipped.map(o => `
+                <tr class="hover:bg-gray-50/50">
+                    <td class="py-4 px-6 font-bold text-sm">${o.id}</td>
+                    <td class="py-4 px-6"><span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded border border-gray-200">${o.awb || 'Pending'}</span></td>
+                    <td class="py-4 px-6 text-sm font-semibold">${o.courier}</td>
+                    <td class="py-4 px-6"><span class="text-xs font-bold text-blue-600 flex items-center gap-1"><i class="ph-fill ph-truck"></i> In Transit</span></td>
+                    <td class="py-4 px-6 text-right"><button class="text-sm font-medium text-maroon hover:underline">Track</button></td>
+                </tr>
+            `).join('');
         }
 
+        // Actions & Modals
         function updateOrderStatus(id, newStatus) {
             const index = orders.findIndex(o => o.id === id);
             if(index !== -1) {
                 orders[index].status = newStatus;
-                renderOrders(); // Re-render table
+                renderOrders();
             }
         }
-
-        // Modal Logic
-        const orderModal = document.getElementById('order-modal');
-        const shipmentModal = document.getElementById('shipment-modal');
 
         function openOrderDetails(id) {
-            const order = orders.find(o => o.id === id);
-            if(order) {
-                document.getElementById('modal-order-id').innerText = `Order: ${order.id}`;
-                document.getElementById('modal-customer').innerText = order.customer;
-                document.getElementById('modal-phone').innerText = order.phone;
-                document.getElementById('modal-address').innerText = order.address;
-                document.getElementById('modal-items').innerText = order.items;
-                document.getElementById('modal-amount').innerText = `₹${order.amount}`;
-                document.getElementById('modal-courier').innerText = order.courier;
+            const o = orders.find(x => x.id === id);
+            if(o) {
+                document.getElementById('modal-order-id').innerText = `Order: ${o.id}`;
+                document.getElementById('modal-customer').innerText = o.customer;
+                document.getElementById('modal-phone').innerText = o.phone;
+                document.getElementById('modal-address').innerText = o.address;
+                document.getElementById('modal-items').innerText = o.items;
+                document.getElementById('modal-amount').innerText = `₹${o.amount}`;
+                document.getElementById('modal-courier').innerText = o.courier;
                 
-                orderModal.classList.remove('hidden');
-                orderModal.classList.add('flex');
+                document.getElementById('order-modal').classList.remove('hidden');
+                document.getElementById('order-modal').classList.add('flex');
             }
         }
 
-        let currentShipmentId = null;
+        let tempShipId = null;
         function openShipmentModal(id) {
-            currentShipmentId = id;
+            tempShipId = id;
             document.getElementById('shipment-loading').classList.remove('hidden');
             document.getElementById('shipment-success').classList.add('hidden');
             
-            shipmentModal.classList.remove('hidden');
-            shipmentModal.classList.add('flex');
+            const modal = document.getElementById('shipment-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
 
-            // Simulate API Delay
             setTimeout(() => {
+                const awb = 'SR-' + Math.floor(Math.random() * 9000000 + 1000000);
+                document.getElementById('new-awb').innerText = awb;
                 document.getElementById('shipment-loading').classList.add('hidden');
                 document.getElementById('shipment-success').classList.remove('hidden');
-                updateOrderStatus(currentShipmentId, 'SHIPPED');
-            }, 2000);
+                
+                const idx = orders.findIndex(o => o.id === tempShipId);
+                if(idx !== -1) {
+                    orders[idx].status = 'SHIPPED';
+                    orders[idx].awb = awb;
+                }
+            }, 1500);
         }
 
         function closeModals() {
-            orderModal.classList.add('hidden');
-            orderModal.classList.remove('flex');
-            shipmentModal.classList.add('hidden');
-            shipmentModal.classList.remove('flex');
+            document.getElementById('order-modal').classList.add('hidden');
+            document.getElementById('order-modal').classList.remove('flex');
+            document.getElementById('shipment-modal').classList.add('hidden');
+            document.getElementById('shipment-modal').classList.remove('flex');
+            // Re-render specific tabs to reflect changes
+            renderOrders();
+            renderShipments();
         }
 
-        // Filter Logic
+        // Order Filter setup
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn').forEach(b => {
@@ -432,14 +596,16 @@
                 });
                 e.target.classList.remove('bg-gray-100', 'text-gray-600');
                 e.target.classList.add('bg-maroon', 'text-white');
-
                 currentFilter = e.target.getAttribute('data-status');
                 renderOrders();
             });
         });
 
-        // Initial Render
+        // Initialize All Tabs
         renderOrders();
+        renderProducts();
+        renderCustomers();
+        renderShipments();
     </script>
 </body>
 </html>
